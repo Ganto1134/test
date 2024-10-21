@@ -1,0 +1,24 @@
+#assoluto {
+  position: absolute;
+  width: 100%;
+}
+
+#sfondo {
+  background-color: #002a60;
+  position: relative;
+  top: 815px;
+  left: 0;
+  width: 1920px;
+  height: 187px;
+}
+
+#sfondo p {
+  position: absolute;
+  top: 77px;
+  left: 350px;
+  width: 1225px;
+  height: 69px;
+  font-size: 15px;
+  font-family: 'Segoe UI Regular', 'Segoe UI', sans-serif;
+  color: white;
+}
