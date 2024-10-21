@@ -1,53 +1,192 @@
 <app-navbar></app-navbar>
 
-<main>
-  <div class="filters" [formGroup]="filterForm">
-    <input
-      formControlName="searchText"
-      type="text"
-      placeholder="Search..."
-      (keydown.enter)="applyFilters()"
-    />
+<div class="container mt-4">
+  <div class="row">
+    <!-- Colonna per i filtri -->
+    <div class="col-12 col-md-4 col-lg-3 mb-4">
+      <div class="card p-3 shadow-sm left">
+        <h5 class="card-title text-primary kabron">Filters</h5>
+        <form [formGroup]="filterForm" class="filters mb-0 pb-0">
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text bg-primary text-white">
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                id="searchText"
+                formControlName="searchText"
+                placeholder="Search..."
+                (keydown.enter)="applyFilters()"
+              />
+            </div>
+          </div>
 
-    <div class="toggle">
-      <label for="completed">Completed</label>
-      <input
-        type="checkbox"
-        formControlName="completedFilter"
-        id="completed"
-        [indeterminate]="filterForm.get('completedFilter')?.value === null"
-      />
+          <div class="mb-3">
+            <label class="form-label kabron text-primary com">Completed</label>
+            <div class="form-check form-switch p-0 tog">
+              <span class="me-5 pe-2 float-start karbon">
+                {{ filterForm.get("completedFilter")?.value ? "Yes" : "No" }}
+              </span>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="completedFilter"
+                formControlName="completedFilter"
+                (change)="applyFilters()"
+                [indeterminate]="
+                  filterForm.get('completedFilter')?.value === null
+                "
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="userId" class="form-label karbon user"
+              >Select User ID</label
+            >
+            <button
+              type="button"
+              class="btn w-100 bg-light border border-dark border-1"
+              data-bs-toggle="modal"
+              data-bs-target="#userIdModal"
+            >
+              <i class="bi bi-arrow-down-circle text-dark float-end"></i>
+            </button>
+          </div>
+
+          <div
+            class="modal fade"
+            id="userIdModal"
+            tabindex="-1"
+            aria-labelledby="userIdModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="userIdModalLabel">
+                    Select User IDs
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="filterForm">
+                    <div class="mb-3">
+                      <label for="userId" class="form-label">User IDs</label>
+                      <select
+                        class="form-select"
+                        formControlName="selectedUserIds"
+                        id="userId"
+                        multiple
+                        size="5"
+                      >
+                        <option *ngFor="let user of userIds" [value]="user">
+                          {{ user }}
+                        </option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    (click)="applyFilters()"
+                  >
+                    Apply Selection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="bg-light text-primary text-decoration-underline"
+            (click)="resetFilters()"
+          >
+            Reset filters
+          </button>
+        </form>
+      </div>
     </div>
 
-    <label for="userId">Select User ID</label>
-    <select formControlName="selectedUserIds" id="userId" multiple>
-      <option *ngFor="let user of userIds" [value]="user">
-        {{ user }}
-      </option>
-    </select>
+    <!-- Colonna per la tabella con paginazione -->
+    <div class="col-12 col-md-8 col-lg-9 mb-5">
+      <div class="card p-3 shadow-sm grigio">
+        <div>
+          <table class="table table-hover">
+            <thead class="table-primary">
+              <tr>
+                <th class="text-primary semi karbon med">User ID</th>
+                <th class="text-primary semi karbon med">Title</th>
+                <th class="text-primary semi karbon med">Completed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let todo of displayedTodos">
+                <td>{{ todo.userId }}</td>
+                <td>{{ todo.title }}</td>
+                <td class="ps-5">
+                  <span *ngIf="todo.completed" class="text-success">✔️</span>
+                  <span *ngIf="!todo.completed" class="text-danger">❌</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-    <button (click)="resetFilters()">Reset filters</button>
+        <!-- Paginazione -->
+        <nav *ngIf="totalPages > 1" aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button
+                class="page-link bg-primary"
+                (click)="goToPage(currentPage - 1)"
+                aria-label="Previous"
+              >
+                &laquo;
+              </button>
+            </li>
+
+            <li
+              class="page-item"
+              *ngFor="let page of getVisiblePages()"
+              [class.active]="currentPage === page"
+            >
+              <button class="page-link bg-primary" (click)="goToPage(page)">
+                {{ page }}
+              </button>
+            </li>
+
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button
+                class="page-link bg-primary"
+                (click)="goToPage(currentPage + 1)"
+                aria-label="Next"
+              >
+                &raquo;
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
   </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>User ID</th>
-        <th>Title</th>
-        <th>Completed</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let todo of filteredTodos">
-        <td>{{ todo.userId }}</td>
-        <td>{{ todo.title }}</td>
-        <td>
-          <span *ngIf="todo.completed" class="completed">✔️</span>
-          <span *ngIf="!todo.completed" class="not-completed">❌</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</main>
+</div>
 
 <app-footer></app-footer>

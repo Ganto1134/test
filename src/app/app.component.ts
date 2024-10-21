@@ -10,8 +10,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class AppComponent implements OnInit {
   todos: any[] = [];
   filteredTodos: any[] = [];
+  displayedTodos: any[] = [];
   userIds: number[] = [];
   filterForm: FormGroup;
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalPages: number = 0;
 
   constructor(private todoService: TodoService, private fb: FormBuilder) {
     this.filterForm = this.fb.group({
@@ -26,9 +30,11 @@ export class AppComponent implements OnInit {
       this.todos = data;
       this.filteredTodos = this.todos;
       this.userIds = [...new Set(this.todos.map(todo => todo.userId))];
-      this.filterForm.valueChanges.subscribe(() => {
-        this.applyFilters();
-      });
+      this.updateDisplayedTodos();
+    });
+
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
     });
   }
 
@@ -48,6 +54,41 @@ export class AppComponent implements OnInit {
 
       return matchesSearch && matchesCompleted && matchesUser;
     });
+
+    this.currentPage = 1;
+    this.updateDisplayedTodos();
+  }
+
+  updateDisplayedTodos() {
+    this.totalPages = Math.ceil(this.filteredTodos.length / this.itemsPerPage);
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.displayedTodos = this.filteredTodos.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updateDisplayedTodos();
+    }
+  }
+
+  getVisiblePages(): number[] {
+    const pages: number[] = [];
+    pages.push(1);
+    if (this.currentPage > 2) {
+      pages.push(this.currentPage - 1);
+    }
+    if (this.currentPage !== 1 && this.currentPage !== this.totalPages) {
+      pages.push(this.currentPage);
+    }
+    if (this.currentPage < this.totalPages - 1) {
+      pages.push(this.currentPage + 1);
+    }
+    if (this.totalPages > 1) {
+      pages.push(this.totalPages);
+    }
+    return Array.from(new Set(pages)).sort((a, b) => a - b);
   }
 
   resetFilters() {
@@ -56,5 +97,7 @@ export class AppComponent implements OnInit {
       completedFilter: null,
       selectedUserIds: []
     });
+    this.currentPage = 1;
+    this.updateDisplayedTodos();
   }
 }

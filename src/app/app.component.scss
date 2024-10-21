@@ -2,16 +2,17 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background: #f5f7fa;
   padding: 1rem;
-  border-radius: 5px;
-  max-width: 300px;
+  border-radius: 8px;
+  max-width: 100%;
   margin-bottom: 1rem;
 
   input[type='text'] {
-    padding: 0.5rem;
+    padding: 0.75rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .toggle {
@@ -20,48 +21,43 @@
     gap: 0.5rem;
   }
 
-  select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
   button {
-    background: #007bff;
-    color: #fff;
     border: none;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     border-radius: 5px;
-    cursor: pointer;
   }
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
 
   th, td {
-    border: 1px solid #ddd;
-    padding: 0.5rem;
+    padding: 0.75rem;
+    text-align: left;
+    background-color: #f4f4f4 !important;
   }
 
   th {
-    background-color: #007bff;
-    color: white;
+    font-weight: bold;
+  }
+  tr {
+    font-size: 1rem;
+    border-bottom: solid 2px;
+    border-color: #5898b3;
   }
 
   .completed {
-    color: green;
+    color: #28a745;
   }
 
   .not-completed {
-    color: red;
+    color: #dc3545;
   }
 }
 
 .pagination {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
 
@@ -69,12 +65,68 @@ table {
     background: #007bff;
     color: #fff;
     border: none;
-    padding: 0.5rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover:not(:disabled) {
+      background: #0056b3;
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
   }
 
   button.active {
     background: #0056b3;
   }
+}
+
+h5 {
+  font-size: 3rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.left {
+  background: #f4f4f4;
+}
+
+.kabron {
+  font-family: 'Karbon', sans-serif;
+}
+
+.com {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.tog {
+  font-size: 1.25rem;
+}
+
+.user {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.semi {
+  font-weight: 600;
+}
+
+.med {
+  font-size: 1.25rem;
+}
+
+.table-hover {
+  border-collapse: separate;
+  border-spacing: 0 1.75rem;
+  font-family: 'Karbon', sans-serif;
+}
+
+.grigio {
+  background-color: #f4f4f4;
 }
