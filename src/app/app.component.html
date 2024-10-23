@@ -139,9 +139,9 @@
             </thead>
             <tbody>
               <tr *ngFor="let todo of displayedTodos">
-                <td>{{ todo.userId }}</td>
-                <td>{{ todo.title }}</td>
-                <td class="ps-5">
+                <td class="white">{{ todo.userId }}</td>
+                <td class="white">{{ todo.title }}</td>
+                <td class="ps-5 white">
                   <span *ngIf="todo.completed" class="text-success">✔️</span>
                   <span *ngIf="!todo.completed" class="text-danger">❌</span>
                 </td>
@@ -155,7 +155,7 @@
           <ul class="pagination justify-content-center">
             <li class="page-item" [class.disabled]="currentPage === 1">
               <button
-                class="page-link bg-primary"
+                class="page-link"
                 (click)="goToPage(currentPage - 1)"
                 aria-label="Previous"
               >
@@ -168,14 +168,14 @@
               *ngFor="let page of getVisiblePages()"
               [class.active]="currentPage === page"
             >
-              <button class="page-link bg-primary" (click)="goToPage(page)">
+              <button class="page-link" (click)="goToPage(page)">
                 {{ page }}
               </button>
             </li>
 
             <li class="page-item" [class.disabled]="currentPage === totalPages">
               <button
-                class="page-link bg-primary"
+                class="page-link"
                 (click)="goToPage(currentPage + 1)"
                 aria-label="Next"
               >
